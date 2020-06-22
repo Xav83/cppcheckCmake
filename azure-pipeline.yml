@@ -1,0 +1,19 @@
+trigger:
+    - master
+
+pool:
+    vmImage: 'windows-2019'
+
+jobs:
+    - job: Windows_Debug_Build
+      timeoutInMinutes: 240
+      steps:
+        - template: .azurePipeline/build.yml
+          parameters:
+            configuration: Debug
+    - job: Windows_Release_Build
+      timeoutInMinutes: 240
+      steps:
+        - template: .azurePipeline/build.yml
+          parameters:
+            configuration: Debug

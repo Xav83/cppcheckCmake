@@ -1,0 +1,25 @@
+
+parameters:
+    - name: configuration
+      type: string
+      default: Debug
+
+steps:
+    - script: |
+        choco install conan
+        choco install cppcheck
+        refreshenv
+      displayName: Install dependencies
+    - script: |
+        mkdir -p build
+        cd build
+        cmake .. -DRUN_CPPCHECK=ON
+      displayName: Generate and Build the soltuion
+    - script: |
+        cmake --build . --config ${{ parameters.configuration }}
+        if [ $RESULT -eq 0 ]; then
+          exit 1
+        else
+          exit 0
+        fi
+      displayName: Check build failure
