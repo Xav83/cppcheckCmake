@@ -11,9 +11,9 @@ else()
   message(STATUS "Cppcheck activated during compilation.")
   find_program(
     CMAKE_CXX_CPPCHECK
-    NAMES cppcheck
+    NAMES cppcheck cppcheck.exe
     HINTS
-    "C:\\Program Files\\Cppcheck\\cppcheck" # chocolatey default path
+    "C:\\Program Files\\Cppcheck" # chocolatey default path
     DOC "Cppcheck program"
     REQUIRED
     )
