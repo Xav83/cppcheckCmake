@@ -10,16 +10,17 @@ steps:
         choco install cppcheck
         refreshenv
       displayName: Install dependencies
-    - script: |
+    - bash: |
         mkdir -p build
         cd build
         cmake .. -DRUN_CPPCHECK=ON
-      displayName: Generate and Build the soltuion
-    - script: |
+      displayName: Generate the soltuion
+    - bash: |
+        cd build
         cmake --build . --config ${{ parameters.configuration }}
-        if [ $RESULT -eq 0 ]; then
+        error_code=$?
+        if [[ $error_code -eq 0 ]]; then
           exit 1
-        else
-          exit 0
         fi
-      displayName: Check build failure
+        exit 0
+      displayName: Build the soltuion
