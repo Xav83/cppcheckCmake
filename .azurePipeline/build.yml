@@ -14,13 +14,17 @@ steps:
         mkdir -p build
         cd build
         cmake .. -DRUN_CPPCHECK=ON
-      displayName: Generate the soltuion
+      displayName: Generate the solution
     - bash: |
         cd build
-        cmake --build . --config ${{ parameters.configuration }}
+        cmake --build . --target cppcheck_test_error --config ${{ parameters.configuration }}
         error_code=$?
         if [[ $error_code -eq 0 ]]; then
           exit 1
         fi
         exit 0
-      displayName: Build the soltuion
+      displayName: Build the target with cppcheck error
+    - bash: |
+        cd build
+        cmake --build . --target cppcheck_test_success --config ${{ parameters.configuration }}
+      displayName: Build the target without cppcheck error
