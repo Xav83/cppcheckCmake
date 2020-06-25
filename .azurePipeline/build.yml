@@ -10,6 +10,12 @@ steps:
         choco install cppcheck
         refreshenv
       displayName: Install dependencies
+      condition: and(succeededOrFailed(), eq(variables['Agent.OS'], 'Windows_NT'))
+    - script: |
+        brew install conan
+        brew install cppcheck
+      displayName: Install dependencies
+      condition: and(succeededOrFailed(), eq(variables['Agent.OS'], 'Darwin'))
     - bash: |
         mkdir -p build
         cd build
@@ -24,7 +30,14 @@ steps:
         fi
         exit 0
       displayName: Build the target with cppcheck error
+      condition: and(succeededOrFailed(), eq(variables['Agent.OS'], 'Windows_NT'))
     - bash: |
         cd build
-        cmake --build . --target cppcheck_test_success --config ${{ parameters.configuration }}
-      displayName: Build the target without cppcheck error
+        cmake --build . --target test_error --config ${{ parameters.configuration }}
+        error_code=$?
+        if [[ $error_code -eq 0 ]]; then
+          exit 1
+        fi
+        exit 0
+      displayName: Build the target with cppcheck error
+      condition: and(succeededOrFailed(), eq(variables['Agent.OS'], 'Darwin'))

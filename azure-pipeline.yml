@@ -1,17 +1,30 @@
 trigger:
     - master
 
-pool:
-    vmImage: 'windows-2019'
-
 jobs:
-    - job: Windows_Debug_Build
-      steps:
-        - template: .azurePipeline/build.yml
-          parameters:
-            configuration: Debug
-    - job: Windows_Release_Build
-      steps:
-        - template: .azurePipeline/build.yml
-          parameters:
-            configuration: Release
+  - job: Debug_Build
+    strategy:
+      matrix:
+        mac:
+          imageName: 'macOS-10.15'
+        windows:
+          imageName: 'vs2017-win2016'
+    steps:
+      - template: .azurePipeline/build.yml
+        parameters:
+          configuration: Debug
+    pool:
+      vmImage: $(imageName)
+  - job: Release_Build
+    strategy:
+      matrix:
+        mac:
+          imageName: 'macOS-10.15'
+        windows:
+          imageName: 'vs2017-win2016'
+    steps:
+      - template: .azurePipeline/build.yml
+        parameters:
+          configuration: Release
+    pool:
+      vmImage: $(imageName)
