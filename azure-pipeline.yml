@@ -14,4 +14,4 @@ jobs:
       steps:
         - template: .azurePipeline/build.yml
           parameters:
-            configuration: Debug
+            configuration: Release
