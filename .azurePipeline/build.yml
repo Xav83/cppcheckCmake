@@ -34,8 +34,7 @@ steps:
     - bash: |
         cd build
         cmake --build . --target test_error --config ${{ parameters.configuration }}
-        error_code=$?
-        if [[ $error_code -eq 0 ]]; then
+        if [[ $? -eq 0 ]]; then
           exit 1
         fi
         exit 0
