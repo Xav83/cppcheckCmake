@@ -2,29 +2,24 @@ trigger:
     - master
 
 jobs:
-  - job: Debug_Build
+  - job: Cppecheck
     strategy:
       matrix:
-        mac:
+        mac_debug:
           imageName: 'macOS-10.15'
-        windows:
+          build_configuration: Debug
+        mac_release:
+          imageName: 'macOS-10.15'
+          build_configuration: Release
+        windows_debug:
           imageName: 'vs2017-win2016'
+          build_configuration: Debug
+        windows_release:
+          imageName: 'vs2017-win2016'
+          build_configuration: Release
     steps:
       - template: .azurePipeline/build.yml
         parameters:
-          configuration: Debug
-    pool:
-      vmImage: $(imageName)
-  - job: Release_Build
-    strategy:
-      matrix:
-        mac:
-          imageName: 'macOS-10.15'
-        windows:
-          imageName: 'vs2017-win2016'
-    steps:
-      - template: .azurePipeline/build.yml
-        parameters:
-          configuration: Release
+          configuration: $(build_configuration)
     pool:
       vmImage: $(imageName)
