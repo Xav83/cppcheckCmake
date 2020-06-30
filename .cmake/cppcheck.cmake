@@ -25,13 +25,18 @@ else()
         You can install it using Homebrew on Apple or Chocolatey on Windows.")
   endif()
 
+  set(CPPCHECK_STD_FLAG "--std=c++17")
+  if(UNIX AND NOT APPLE) # Linux
+    set(CPPCHECK_STD_FLAG "")
+  endif()
+
   list(
     APPEND
     CMAKE_CXX_CPPCHECK
     "--enable=warning,style,performance,portability"
     "--inconclusive"
     "--error-exitcode=1"
-    "--std=c++17"
+    "${CPPCHECK_STD_FLAG}"
     "--force"
     "--inline-suppr"
     "."

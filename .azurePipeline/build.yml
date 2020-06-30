@@ -17,8 +17,10 @@ steps:
       displayName: Install dependencies
       condition: and(succeededOrFailed(), eq(variables['Agent.OS'], 'Darwin'))
     - script: |
+        sudo apt-get update
         sudo apt-get install conan
         sudo apt-get install cppcheck
+        cppcheck --version
       displayName: Install dependencies
       condition: and(succeededOrFailed(), eq(variables['Agent.OS'], 'Linux'))
     - bash: |
@@ -44,4 +46,14 @@ steps:
         fi
         exit 0
       displayName: Build the target with cppcheck error
+      condition: and(succeededOrFailed(), or(eq(variables['Agent.OS'], 'Darwin'), eq(variables['Agent.OS'], 'Linux')))
+    - bash: |
+        cd build
+        cmake --build . --target cppcheck_test_success --config ${{ parameters.configuration }}
+      displayName: Build the target with cppcheck success
+      condition: and(succeededOrFailed(), eq(variables['Agent.OS'], 'Windows_NT'))
+    - bash: |
+        cd build
+        cmake --build . --target test_success --config ${{ parameters.configuration }}
+      displayName: Build the target with cppcheck success
       condition: and(succeededOrFailed(), or(eq(variables['Agent.OS'], 'Darwin'), eq(variables['Agent.OS'], 'Linux')))
