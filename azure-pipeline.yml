@@ -11,6 +11,18 @@ jobs:
         mac_release:
           imageName: 'macOS-10.15'
           build_configuration: Release
+        linux_ubuntu_16_04_debug:
+          imageName: 'ubuntu-16.04'
+          build_configuration: Debug
+        linux_ubuntu_16_04_release:
+          imageName: 'ubuntu-16.04'
+          build_configuration: Release
+        linux_ubuntu_18_04_debug:
+          imageName: 'ubuntu-18.04'
+          build_configuration: Debug
+        linux_ubuntu_18_04_release:
+          imageName: 'ubuntu-18.04'
+          build_configuration: Release
         windows_vs_2017_debug:
           imageName: 'vs2017-win2016'
           build_configuration: Debug
