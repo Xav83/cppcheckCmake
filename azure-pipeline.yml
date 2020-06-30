@@ -11,11 +11,17 @@ jobs:
         mac_release:
           imageName: 'macOS-10.15'
           build_configuration: Release
-        windows_debug:
+        windows_vs_2017_debug:
           imageName: 'vs2017-win2016'
           build_configuration: Debug
-        windows_release:
+        windows_vs_2017_release:
           imageName: 'vs2017-win2016'
+          build_configuration: Release
+        windows_vs_2019_debug:
+          imageName: 'windows-2019'
+          build_configuration: Debug
+        windows_vs_2019_release:
+          imageName: 'windows-2019'
           build_configuration: Release
     steps:
       - template: .azurePipeline/build.yml
