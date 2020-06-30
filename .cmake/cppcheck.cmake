@@ -25,9 +25,20 @@ else()
         You can install it using Homebrew on Apple or Chocolatey on Windows.")
   endif()
 
-  set(CPPCHECK_STD_FLAG "--std=c++17")
-  if(UNIX AND NOT APPLE) # Linux
-    set(CPPCHECK_STD_FLAG "")
+  execute_process(COMMAND ${CMAKE_CXX_CPPCHECK} --version
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    RESULT_VARIABLE CPPCHECK_VERSION_COMMAND_RESULT
+    OUTPUT_VARIABLE CPPCHECK_VERSION_OUTPUT
+  )
+
+  if(NOT ${CPPCHECK_VERSION_COMMAND_RESULT} EQUAL 0)
+    message(FATAL_ERROR "Failed to run '${CMAKE_CXX_CPPCHECK} --version'")
+  endif()
+
+  string(REPLACE "Cppcheck " "" CPPCHECK_VERSION_OUTPUT ${CPPCHECK_VERSION_OUTPUT})
+
+  if(${CPPCHECK_VERSION_OUTPUT} VERSION_GREATER_EQUAL "1.88")
+    set(CPPCHECK_STD_FLAG "--std=c++17")
   endif()
 
   list(
