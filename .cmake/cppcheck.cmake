@@ -59,6 +59,14 @@ function(cppcheck_version output)
   set(${output} ${CPPCHECK_VERSION_OUTPUT} PARENT_SCOPE)
 endfunction()
 
+function(cppcheck_minimum_required  version)
+  cppcheck_version(CPPCHECK_ACTUAL_VERSION)
+
+  if(${CPPCHECK_ACTUAL_VERSION} VERSION_LESS_EQUAL "${version}")
+    message(FATAL_ERROR "Error cppcheck version too old:\nThe version of cppcheck on this machine is ${CPPCHECK_ACTUAL_VERSION}, but the minimum version specified is ${version}")
+  endif()
+endfunction()
+
 if(NOT RUN_CPPCHECK)
   message(STATUS "Cppcheck deactivated during compilation.")
 else()
@@ -71,6 +79,8 @@ else()
   if(${CPPCHECK_VERSION_OUTPUT} VERSION_GREATER_EQUAL "1.88")
     set(CPPCHECK_STD_FLAG "--std=c++17")
   endif()
+
+  cppcheck_minimum_required(50.2)
 
   list(
     APPEND
