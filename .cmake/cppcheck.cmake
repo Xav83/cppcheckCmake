@@ -59,11 +59,61 @@ function(cppcheck_version output)
   set(${output} ${CPPCHECK_VERSION_OUTPUT} PARENT_SCOPE)
 endfunction()
 
-function(cppcheck_minimum_required  version)
+#! cppcheck_minimum_required : Sets the minimum required version of cppcheck for a project.
+#
+# cppcheck_minimum_required(VERSION <min> [<max>] [FATAL_ERROR])
+#
+# This function is used to specify the versions of cppcheck allowed in your project.
+#
+# 'VERSION <min> [max]'
+#   Specifies the range of version of cppcheck allowed in your project.
+#   If the <max> is not specified, it only when that the version is at least greater than the one given as a parameter.
+#
+# 'FATAL_ERROR'
+#   Flag that you can specify if you want the function to display an error when the version of cppcheck doesn't match the requirements.
+#
+function(cppcheck_minimum_required)
+  cmake_parse_arguments(CPPCHECK_MINIMUM_REQUIRED "FATAL_ERROR" "" "VERSION" ${ARGN})
+
   cppcheck_version(CPPCHECK_ACTUAL_VERSION)
 
-  if(${CPPCHECK_ACTUAL_VERSION} VERSION_LESS_EQUAL "${version}")
-    message(FATAL_ERROR "Error cppcheck version too old:\nThe version of cppcheck on this machine is ${CPPCHECK_ACTUAL_VERSION}, but the minimum version specified is ${version}")
+  if(NOT DEFINED CPPCHECK_MINIMUM_REQUIRED_VERSION)
+    message(FATAL_ERROR "cppcheck_minimum_required VERSION argument is mandatory.")
+  endif()
+
+  list(LENGTH CPPCHECK_MINIMUM_REQUIRED_VERSION CPPCHECK_MINIMUM_REQUIRED_VERSION_SIZE)
+  if(${CPPCHECK_MINIMUM_REQUIRED_VERSION_SIZE} EQUAL 0 OR ${CPPCHECK_MINIMUM_REQUIRED_VERSION_SIZE} GREATER 2)
+    message(FATAL_ERROR "cppcheck_minimum_required takes only two versions, the expected minimum and maximum version of cppcheck.")
+  endif()
+
+  list(GET CPPCHECK_MINIMUM_REQUIRED_VERSION 0 CPPCHECK_EXPECTED_MINIMUM_VERSION)
+
+  if(${CPPCHECK_ACTUAL_VERSION} VERSION_LESS_EQUAL ${CPPCHECK_EXPECTED_MINIMUM_VERSION})
+    set(CPPCHECK_ERROR_MESSAGE "Error - cppcheck version too old:\n"
+      "The version of cppcheck on this machine is ${CPPCHECK_ACTUAL_VERSION}, but the minimum version specified is ${CPPCHECK_EXPECTED_MINIMUM_VERSION}")
+    if(DEFINED CPPCHECK_MINIMUM_REQUIRED_FATAL_ERROR)
+      message(FATAL_ERROR "${CPPCHECK_ERROR_MESSAGE}")
+    else()
+      message(WARNING "${CPPCHECK_ERROR_MESSAGE}")
+    endif()
+  endif()
+
+  if(${CPPCHECK_MINIMUM_REQUIRED_VERSION_SIZE} EQUAL 2)
+    list(GET CPPCHECK_MINIMUM_REQUIRED_VERSION 1 CPPCHECK_EXPECTED_MAXIMUM_VERSION)
+
+    if(${CPPCHECK_EXPECTED_MINIMUM_VERSION} VERSION_GREATER_EQUAL ${CPPCHECK_EXPECTED_MAXIMUM_VERSION})
+      message(FATAL_ERROR "The two versions passed to cppcheck_minimum_required are reversed.\n"
+        "The minimum should be passed before the maximum")
+    endif()
+
+    if(${CPPCHECK_ACTUAL_VERSION} VERSION_GREATER_EQUAL ${CPPCHECK_EXPECTED_MAXIMUM_VERSION})
+      set(CPPCHECK_ERROR_MESSAGE "Error - cppcheck version too recent:\nThe version of cppcheck on this machine is ${CPPCHECK_ACTUAL_VERSION}, but the maximum version specified is ${CPPCHECK_EXPECTED_MAXIMUM_VERSION}")
+      if(DEFINED CPPCHECK_MINIMUM_REQUIRED_FATAL_ERROR)
+        message(FATAL_ERROR "${CPPCHECK_ERROR_MESSAGE}")
+      else()
+        message(WARNING "${CPPCHECK_ERROR_MESSAGE}")
+      endif()
+    endif()
   endif()
 endfunction()
 
@@ -80,7 +130,7 @@ else()
     set(CPPCHECK_STD_FLAG "--std=c++17")
   endif()
 
-  cppcheck_minimum_required(50.2)
+  cppcheck_minimum_required(VERSION 1.72 FATAL_ERROR)
 
   list(
     APPEND
