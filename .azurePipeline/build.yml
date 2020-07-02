@@ -20,7 +20,6 @@ steps:
         sudo apt-get update
         sudo apt-get install conan
         sudo apt-get install cppcheck
-        cppcheck --version
       displayName: Install dependencies
       condition: and(succeededOrFailed(), eq(variables['Agent.OS'], 'Linux'))
     - bash: |
