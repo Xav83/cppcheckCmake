@@ -88,7 +88,7 @@ function(cppcheck_minimum_required)
 
   list(GET CPPCHECK_MINIMUM_REQUIRED_VERSION 0 CPPCHECK_EXPECTED_MINIMUM_VERSION)
 
-  if(${CPPCHECK_ACTUAL_VERSION} VERSION_LESS_EQUAL ${CPPCHECK_EXPECTED_MINIMUM_VERSION})
+  if(${CPPCHECK_ACTUAL_VERSION} VERSION_LESS ${CPPCHECK_EXPECTED_MINIMUM_VERSION})
     set(CPPCHECK_ERROR_MESSAGE "Error - cppcheck version too old:\n"
       "The version of cppcheck on this machine is ${CPPCHECK_ACTUAL_VERSION}, but the minimum version specified is ${CPPCHECK_EXPECTED_MINIMUM_VERSION}")
     if(DEFINED CPPCHECK_MINIMUM_REQUIRED_FATAL_ERROR)
@@ -106,7 +106,7 @@ function(cppcheck_minimum_required)
         "The minimum should be passed before the maximum")
     endif()
 
-    if(${CPPCHECK_ACTUAL_VERSION} VERSION_GREATER_EQUAL ${CPPCHECK_EXPECTED_MAXIMUM_VERSION})
+    if(${CPPCHECK_ACTUAL_VERSION} VERSION_GREATER ${CPPCHECK_EXPECTED_MAXIMUM_VERSION})
       set(CPPCHECK_ERROR_MESSAGE "Error - cppcheck version too recent:\nThe version of cppcheck on this machine is ${CPPCHECK_ACTUAL_VERSION}, but the maximum version specified is ${CPPCHECK_EXPECTED_MAXIMUM_VERSION}")
       if(DEFINED CPPCHECK_MINIMUM_REQUIRED_FATAL_ERROR)
         message(FATAL_ERROR "${CPPCHECK_ERROR_MESSAGE}")
